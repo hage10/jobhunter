@@ -1,14 +1,20 @@
 package vn.trungtq.jobhunter.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 import vn.trungtq.jobhunter.util.SecurityUtil;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "companies")
+@Getter
+@Setter
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,77 +39,13 @@ public class Company {
 
     private String updatedBy;
 
-    public Long getId() {
-        return id;
-    }
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore // bỏ danh sách user khi lấy danh sách công ty
+    List<User> users;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore // bỏ danh sách công việc khi lấy danh sách công ty
+    List<Job> jobs;
 
     @PrePersist
     protected void onCreate() {

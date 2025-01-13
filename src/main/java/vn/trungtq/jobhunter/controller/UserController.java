@@ -38,7 +38,7 @@ public class UserController {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User newUser = this.userService.handleCreateUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(user));
+        return ResponseEntity.status(HttpStatus.CREATED). body(this.userService.convertToResCreateUserDTO(newUser));
     }
 
 

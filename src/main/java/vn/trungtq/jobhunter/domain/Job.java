@@ -1,46 +1,57 @@
 package vn.trungtq.jobhunter.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.trungtq.jobhunter.util.SecurityUtil;
-import vn.trungtq.jobhunter.util.enums.GenderEnum;
+import vn.trungtq.jobhunter.util.enums.LevelEnum;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
-@Table(name="users")
+@Table(name = "jobs")
 @Getter
 @Setter
-public class User {
+public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
-    private String password;
+    private String location;
 
-    @NotBlank(message = "Email không được để trống")
-    private String email;
+    private double salary;
 
-    private int age;
+    private int quantity;
 
-    @Enumerated(EnumType.STRING)
-    private GenderEnum gender;
-    private String address;
+    private LevelEnum level;
 
     @Column(columnDefinition = "MEDIUMTEXT")
-    private String refreshToken;
-    private Instant createdAt;
-    private Instant updatedAt;
-    private String createdBy;
-    private String updatedBy;
+    private String description;
+
+    private Instant startDate;
+
+    private Instant endDate;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore // bỏ danh sách skill khi lấy danh sách công việc
+    @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<Skill> skills;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
+    private String createdBy;
+
+    private String updatedBy;
 
     @PrePersist
     protected void onCreate() {
@@ -54,4 +65,5 @@ public class User {
         this.setUpdatedBy(updateBy);
         this.setUpdatedAt(Instant.now());
     }
+
 }

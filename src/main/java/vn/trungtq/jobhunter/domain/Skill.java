@@ -1,46 +1,35 @@
 package vn.trungtq.jobhunter.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.trungtq.jobhunter.util.SecurityUtil;
-import vn.trungtq.jobhunter.util.enums.GenderEnum;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
-@Table(name="users")
+@Table(name = "skills")
 @Getter
 @Setter
-public class User {
+public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+
+    @NotBlank(message = "name không được để trống")
     private String name;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
-    private String password;
-
-    @NotBlank(message = "Email không được để trống")
-    private String email;
-
-    private int age;
-
-    @Enumerated(EnumType.STRING)
-    private GenderEnum gender;
-    private String address;
-
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String refreshToken;
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
+    @JsonIgnore
+    private List<Job> jobs;
 
     @PrePersist
     protected void onCreate() {
