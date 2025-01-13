@@ -12,8 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.trungtq.jobhunter.domain.User;
-import vn.trungtq.jobhunter.domain.dto.LoginDTO;
-import vn.trungtq.jobhunter.domain.dto.ResLoginDTO;
+import vn.trungtq.jobhunter.domain.request.ReqLoginDTO;
+import vn.trungtq.jobhunter.domain.response.ResLoginDTO;
 import vn.trungtq.jobhunter.service.UserService;
 import vn.trungtq.jobhunter.util.SecurityUtil;
 import vn.trungtq.jobhunter.util.anotation.ApiMessage;
@@ -36,9 +36,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO reqLoginDTO) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDTO.getUsername(), loginDTO.getPassword());
+                reqLoginDTO.getUsername(), reqLoginDTO.getPassword());
 
         // xác thực người dùng => cần viết hàm loadUserByUsername
         Authentication authentication = authenticationManagerBuilder.getObject()
@@ -46,7 +46,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO res = new ResLoginDTO();
-        User userDb= this.userService.handleGetUserByUsername(loginDTO.getUsername());
+        User userDb= this.userService.handleGetUserByUsername(reqLoginDTO.getUsername());
 
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                 userDb.getId(),
@@ -59,7 +59,7 @@ public class AuthController {
         //create refresh token
         String refreshToken =  this.securityUtil.createRefreshToken(res);
         System.out.println(refreshToken);
-        this.userService.updateUserToken(refreshToken,loginDTO.getUsername());
+        this.userService.updateUserToken(refreshToken, reqLoginDTO.getUsername());
 
         //set cookie
         ResponseCookie resCookies = ResponseCookie.from("refresh_token",refreshToken)

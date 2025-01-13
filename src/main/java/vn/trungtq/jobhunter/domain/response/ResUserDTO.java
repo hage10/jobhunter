@@ -1,4 +1,4 @@
-package vn.trungtq.jobhunter.domain.dto.response;
+package vn.trungtq.jobhunter.domain.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

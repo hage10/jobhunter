@@ -5,12 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.trungtq.jobhunter.domain.Company;
-import vn.trungtq.jobhunter.domain.User;
-import vn.trungtq.jobhunter.domain.dto.Meta;
-import vn.trungtq.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.trungtq.jobhunter.domain.response.ResultPaginationDTO;
 import vn.trungtq.jobhunter.repository.CompanyRepository;
-
-import java.util.List;
 
 @Service
 public class CompanyService {
@@ -33,7 +29,7 @@ public class CompanyService {
     public ResultPaginationDTO handleGetAllCompanies(Specification<Company> spec, Pageable pageable) {
         Page<Company> pageCompanies = companyRepository.findAll(spec,pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
-        Meta meta = new Meta();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber() + 1);
         meta.setPageSize(pageable.getPageSize());
         meta.setTotal(pageCompanies.getTotalElements());

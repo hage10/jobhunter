@@ -5,11 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.trungtq.jobhunter.domain.User;
-import vn.trungtq.jobhunter.domain.dto.Meta;
-import vn.trungtq.jobhunter.domain.dto.ResultPaginationDTO;
-import vn.trungtq.jobhunter.domain.dto.response.ResCreateUserDTO;
-import vn.trungtq.jobhunter.domain.dto.response.ResUpdateUserDTO;
-import vn.trungtq.jobhunter.domain.dto.response.ResUserDTO;
+import vn.trungtq.jobhunter.domain.response.ResultPaginationDTO;
+import vn.trungtq.jobhunter.domain.response.ResCreateUserDTO;
+import vn.trungtq.jobhunter.domain.response.ResUpdateUserDTO;
+import vn.trungtq.jobhunter.domain.response.ResUserDTO;
 import vn.trungtq.jobhunter.repository.UserRepository;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public class UserService {
     public ResultPaginationDTO handleGetAllUsers(Specification<User> spec, Pageable pageable) {
         Page<User> pageUsers = userRepository.findAll(spec,pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
-        Meta meta = new Meta();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber() + 1);
         meta.setPageSize(pageable.getPageSize());
         meta.setTotal(pageUsers.getTotalElements());

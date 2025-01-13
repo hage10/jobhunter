@@ -9,15 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import vn.trungtq.jobhunter.domain.User;
-import vn.trungtq.jobhunter.domain.dto.ResultPaginationDTO;
-import vn.trungtq.jobhunter.domain.dto.response.ResCreateUserDTO;
-import vn.trungtq.jobhunter.domain.dto.response.ResUpdateUserDTO;
-import vn.trungtq.jobhunter.domain.dto.response.ResUserDTO;
+import vn.trungtq.jobhunter.domain.response.ResultPaginationDTO;
+import vn.trungtq.jobhunter.domain.response.ResCreateUserDTO;
+import vn.trungtq.jobhunter.domain.response.ResUpdateUserDTO;
+import vn.trungtq.jobhunter.domain.response.ResUserDTO;
 import vn.trungtq.jobhunter.service.UserService;
 import vn.trungtq.jobhunter.util.anotation.ApiMessage;
 import vn.trungtq.jobhunter.util.error.IdInvalidException;
-
-import java.util.List;
 
 @RestController
 public class UserController {
