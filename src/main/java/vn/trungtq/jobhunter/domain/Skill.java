@@ -1,10 +1,17 @@
 package vn.trungtq.jobhunter.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import vn.trungtq.jobhunter.domain.response.ResultPaginationDTO;
 import vn.trungtq.jobhunter.util.SecurityUtil;
 
 import java.time.Instant;
@@ -19,7 +26,7 @@ public class Skill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "name không được để trống")
+    @NotBlank(message = "Tên skill không được để trống")
     private String name;
 
     private Instant createdAt;
@@ -43,4 +50,5 @@ public class Skill {
         this.setUpdatedBy(updateBy);
         this.setUpdatedAt(Instant.now());
     }
+
 }

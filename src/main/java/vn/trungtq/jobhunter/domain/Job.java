@@ -1,6 +1,7 @@
 package vn.trungtq.jobhunter.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,12 +37,14 @@ public class Job {
 
     private Instant endDate;
 
+    private Boolean active;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonIgnore // bỏ danh sách skill khi lấy danh sách công việc
+    @JsonIgnoreProperties(value = {"jobs"}) // bỏ danh sách skill khi lấy danh sách công việc
     @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skills;
 
