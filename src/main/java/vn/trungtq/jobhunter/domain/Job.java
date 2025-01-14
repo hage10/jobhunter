@@ -28,6 +28,7 @@ public class Job {
 
     private int quantity;
 
+    @Enumerated(EnumType.STRING)
     private LevelEnum level;
 
     @Column(columnDefinition = "MEDIUMTEXT")

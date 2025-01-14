@@ -31,12 +31,7 @@ public class SkillService {
         return this.skillRepository.findById(id).orElse(null);
     }
     public Skill handleUpdateSkill(Skill skill) {
-        Skill curSkill = handleGetSkill(skill.getId());
-        if (curSkill != null) {
-            curSkill.setName(skill.getName());
-            return this.skillRepository.save(curSkill);
-        }
-        return  null;
+        return this.skillRepository.save(skill);
     }
     public ResultPaginationDTO handleGetAllSkills(Specification<Skill> spec, Pageable pageable) {
         Page<Skill> pageSkills = skillRepository.findAll(spec,pageable);
@@ -52,11 +47,11 @@ public class SkillService {
     }
     public void handleDeleteSkill(long id) {
         Optional<Skill> skill = this.skillRepository.findById(id);
-//        if (skill.isPresent()) {
-//            Company companyToDelete = company.get();
-//            List<User> users = this.userRepository.findByCompany(companyToDelete);
-//            this.userRepository.deleteAll(users);
-//        }
+        if (skill.isPresent()) {
+            Skill skillToDelete = skill.get();
+            skillToDelete.getJobs().forEach(job -> job.getSkills().remove(skillToDelete));
+
+        }
         this.skillRepository.deleteById(id);
     }
 }

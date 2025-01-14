@@ -7,7 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.trungtq.jobhunter.domain.Company;
 import vn.trungtq.jobhunter.domain.Skill;
 import vn.trungtq.jobhunter.domain.response.ResultPaginationDTO;
 import vn.trungtq.jobhunter.service.SkillService;
@@ -43,8 +42,15 @@ public class SkillController {
                     "Skill không tồn tại"
             );
         }
-        Skill newSkill = this.skillService.handleUpdateSkill(skill);
-        return ResponseEntity.status(HttpStatus.OK).body(newSkill);
+        boolean isEmailExist = this.skillService.checkNameExist(skill.getName());
+        if (isEmailExist) {
+            throw  new IdInvalidException(
+                    "Skill " + skill.getName() + " đã tồn tại"
+            );
+        }
+        curSkill.setName(skill.getName());
+        Skill updatedSkill = this.skillService.handleUpdateSkill(curSkill);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedSkill);
     }
     @GetMapping("/skills")
     public ResponseEntity<ResultPaginationDTO> getAllSkill(@Filter Specification<Skill> spec, Pageable pageable){
@@ -70,8 +76,7 @@ public class SkillController {
                     "Skill không tồn tại"
             );
         }
-        Skill skill = this.skillService.handleGetSkill(id);
-        return ResponseEntity.status(HttpStatus.OK).body(skill);
+        return ResponseEntity.status(HttpStatus.OK).body(curSkill);
     }
 
 }
