@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.trungtq.jobhunter.domain.Company;
 import vn.trungtq.jobhunter.domain.response.ResultPaginationDTO;
 import vn.trungtq.jobhunter.service.CompanyService;
+import vn.trungtq.jobhunter.util.error.IdInvalidException;
 
 @RestController
 public class CompanyController {
@@ -30,8 +31,12 @@ public class CompanyController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/companies/{id}")
-    public ResponseEntity<Company> getCompany(@PathVariable("id") long id) {
+    public ResponseEntity<Company> getCompany(@PathVariable("id") long id) throws IdInvalidException {
+
         Company company = this.companyService.handleGetCompany(id);
+        if (company == null) {
+            throw new IdInvalidException("Công ty không tồn tại");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(company);
     }
 

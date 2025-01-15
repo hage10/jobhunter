@@ -1,52 +1,46 @@
 package vn.trungtq.jobhunter.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.trungtq.jobhunter.util.SecurityUtil;
-import vn.trungtq.jobhunter.util.enums.GenderEnum;
+import vn.trungtq.jobhunter.util.enums.ResumeStateEnum;
 
 import java.time.Instant;
-import java.util.List;
 
+@Table(name = "resumes")
 @Entity
-@Table(name="users")
 @Getter
 @Setter
-public class User {
+public class Resume {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-
-    @NotBlank(message = "Mật khẩu không được để trống")
-    private String password;
-
     @NotBlank(message = "Email không được để trống")
     private String email;
 
-    private int age;
+    @NotBlank(message = "Url không được để trống(Upload CV chưa thành công)")
+    private String url;
 
     @Enumerated(EnumType.STRING)
-    private GenderEnum gender;
-    private String address;
-
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String refreshToken;
-    private Instant createdAt;
-    private Instant updatedAt;
-    private String createdBy;
-    private String updatedBy;
+    private ResumeStateEnum status;
 
     @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
-    @JsonIgnore
-    List<Resume> resumes;
+    @ManyToOne
+    @JoinColumn(name = "job_id")
+    private Job job;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
+    private String createdBy;
+
+    private String updatedBy;
 
     @PrePersist
     protected void onCreate() {
@@ -60,4 +54,5 @@ public class User {
         this.setUpdatedBy(updateBy);
         this.setUpdatedAt(Instant.now());
     }
+
 }

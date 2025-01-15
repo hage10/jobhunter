@@ -29,13 +29,13 @@ public class JobController {
     }
     @PutMapping("/jobs")
     public ResponseEntity<ResUpdateJobDTO> updateJob(@Valid @RequestBody Job job) throws IdInvalidException {
-        Job curSkill = this.jobService.handleGetJob(job.getId());
-        if (curSkill == null) {
+        Job curJob = this.jobService.handleGetJob(job.getId());
+        if (curJob == null) {
             throw  new IdInvalidException(
                     "Job không tồn tại"
             );
         }
-        ResUpdateJobDTO updatedJob = this.jobService.handleUpdateJob(job);
+        ResUpdateJobDTO updatedJob = this.jobService.handleUpdateJob(job,curJob);
         return ResponseEntity.status(HttpStatus.OK).body(updatedJob);
     }
     @GetMapping("/jobs")
@@ -44,7 +44,7 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
     @DeleteMapping("/jobs/{id}")
-    public ResponseEntity<Void> deleteSkill(@PathVariable("id") long id)  throws IdInvalidException {
+    public ResponseEntity<Void> deleteJob(@PathVariable("id") long id)  throws IdInvalidException {
         Job curJob = this.jobService.handleGetJob(id);
         if (curJob == null) {
             throw  new IdInvalidException(
@@ -55,7 +55,7 @@ public class JobController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/jobs/{id}")
-    public ResponseEntity<Job> getSkill(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<Job> getJob(@PathVariable("id") long id) throws IdInvalidException {
         Job curJob = this.jobService.handleGetJob(id);
         if (curJob == null) {
             throw  new IdInvalidException(
