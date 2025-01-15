@@ -15,7 +15,6 @@ import vn.trungtq.jobhunter.domain.response.resume.ResUpdateResumeDTO;
 import vn.trungtq.jobhunter.repository.JobRepository;
 import vn.trungtq.jobhunter.repository.ResumeRepository;
 import vn.trungtq.jobhunter.repository.UserRepository;
-import vn.trungtq.jobhunter.util.error.IdInvalidException;
 
 import java.util.List;
 import java.util.Optional;
