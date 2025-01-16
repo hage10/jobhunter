@@ -43,6 +43,7 @@ public class AuthController {
         // xác thực người dùng => cần viết hàm loadUserByUsername
         Authentication authentication = authenticationManagerBuilder.getObject()
                 .authenticate(authenticationToken);
+        //set thông tin người dùng  vào context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO res = new ResLoginDTO();
@@ -51,9 +52,12 @@ public class AuthController {
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                 userDb.getId(),
                 userDb.getName(),
-                userDb.getEmail());
+                userDb.getEmail(),
+                userDb.getRole());
         res.setUser(userLogin);
-        String accessToken = this.securityUtil.createAccessToken(authentication.getName(),res.getUser());
+
+        //create access token
+        String accessToken = this.securityUtil.createAccessToken(authentication.getName(),res);
         res.setAccessToken(accessToken);
 
         //create refresh token
@@ -88,6 +92,8 @@ public class AuthController {
             userLogin.setEmail(userDb.getEmail());
             userLogin.setName(userDb.getName());
             userLogin.setId(userDb.getId());
+            userLogin.setRole(userDb.getRole());
+
             userGetAccount.setUser(userLogin);
         }
         return ResponseEntity.ok().body(userGetAccount);
@@ -108,9 +114,12 @@ public class AuthController {
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                 userDb.getId(),
                 userDb.getName(),
-                userDb.getEmail());
+                userDb.getEmail(),
+                userDb.getRole()
+                );
         res.setUser(userLogin);
-        String accessToken = this.securityUtil.createAccessToken(email,res.getUser());
+
+        String accessToken = this.securityUtil.createAccessToken(email,res);
         res.setAccessToken(accessToken);
 
         //create refresh token

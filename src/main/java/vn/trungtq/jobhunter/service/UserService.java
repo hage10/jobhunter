@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.trungtq.jobhunter.domain.Company;
+import vn.trungtq.jobhunter.domain.Role;
 import vn.trungtq.jobhunter.domain.User;
 import vn.trungtq.jobhunter.domain.response.ResultPaginationDTO;
 import vn.trungtq.jobhunter.domain.response.ResCreateUserDTO;
@@ -20,13 +21,16 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final CompanyService companyService;
     private final CompanyRepository companyRepository;
+    private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, CompanyService companyService, CompanyRepository companyRepository) {
+    public UserService(UserRepository userRepository,
+                       CompanyRepository companyRepository,
+                       RoleService roleService
+    ) {
         this.userRepository = userRepository;
-        this.companyService = companyService;
         this.companyRepository = companyRepository;
+        this.roleService = roleService;
     }
 
     public User handleCreateUser(User user) {
@@ -34,7 +38,12 @@ public class UserService {
             Optional<Company> companyOptional = this.companyRepository.findById(user.getCompany().getId());
             user.setCompany(companyOptional.orElse(null));
         }
-        return this.userRepository.save(user);
+        //check role
+        if (user.getRole() != null) {
+            Role role = this.roleService.handleGetRole(user.getRole().getId());
+            user.setRole(role !=null ? role : null);
+        }
+         return this.userRepository.save(user);
     }
     public void handleDeleteUser(long id) {
          this.userRepository.deleteById(id);
@@ -67,6 +76,17 @@ public class UserService {
             if(user.getCompany() != null) {
                 Optional<Company> companyOptional = this.companyRepository.findById(user.getCompany().getId());
                 curUser.setCompany(companyOptional.orElse(null));
+            }
+
+            //check company
+            if (user.getCompany() != null) {
+                Optional<Company> companyOptional = this.companyRepository.findById(user.getCompany().getId());
+                curUser.setCompany(companyOptional.orElse(null));
+            }
+            //check role
+            if (user.getRole() != null) {
+                Role role = this.roleService.handleGetRole(user.getRole().getId());
+                curUser.setRole(role !=null ? role : null);
             }
 
             curUser = this.userRepository.save(curUser);
@@ -102,10 +122,16 @@ public class UserService {
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO rs = new ResUserDTO();
         ResUserDTO.CompanyUser company = new ResUserDTO.CompanyUser();
+        ResUserDTO.RoleUser roleUser = new ResUserDTO.RoleUser();
         if (user.getCompany() != null) {
             company.setId(user.getCompany().getId());
             company.setName(user.getCompany().getName());
             rs.setCompany(company);
+        }
+        if (user.getRole() != null){
+            roleUser.setId(user.getRole().getId());
+            roleUser.setName(user.getRole().getName());
+            rs.setRole(roleUser);
         }
         rs.setId(user.getId());
         rs.setName(user.getName());
