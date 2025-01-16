@@ -42,7 +42,9 @@ public class PermissionController {
         }
         boolean isExisted = this.permissionService.isPermissionExist(permission);
         if (isExisted) {
-            throw  new IdInvalidException("Permission đã tồn tại");
+            if(this.permissionService.isSameName(permission)){
+                throw  new IdInvalidException("Permission đã tồn tại");
+            }
         }
         Permission updatedPermission = this.permissionService.handleUpdatePermission(permission);
 

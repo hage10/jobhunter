@@ -67,5 +67,14 @@ public class PermissionService {
                 permission.getModule(), permission.getApiPath(), permission.getMethod()
         );
     }
+    public boolean isSameName(Permission permission) {
+        Permission curPermission = handleGetPermission(permission.getId());
+        if (curPermission != null) {
+            if (curPermission.getName().equals(permission.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

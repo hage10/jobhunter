@@ -3,16 +3,19 @@ package vn.trungtq.jobhunter.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import vn.trungtq.jobhunter.domain.User;
 import vn.trungtq.jobhunter.domain.request.ReqLoginDTO;
+import vn.trungtq.jobhunter.domain.response.ResCreateUserDTO;
 import vn.trungtq.jobhunter.domain.response.ResLoginDTO;
 import vn.trungtq.jobhunter.service.UserService;
 import vn.trungtq.jobhunter.util.SecurityUtil;
@@ -25,14 +28,18 @@ public class AuthController {
     private  final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
     @Value("${trungtq.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
     public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder,
                           SecurityUtil securityUtil,
-                          UserService userService) {
+                          UserService userService,
+                          PasswordEncoder passwordEncoder
+    ) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
@@ -162,5 +169,19 @@ public class AuthController {
                 .maxAge(0)
                 .build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookies.toString()).build();
+    }
+
+    @PostMapping("/register")
+    @ApiMessage("Register a new user")
+    public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User user) throws IdInvalidException {
+        boolean isEmailExist = this.userService.checkEmailExist(user.getEmail());
+        if (isEmailExist) {
+            throw  new IdInvalidException(
+                    "Email " + user.getEmail() + " đã tồn tại, vui lòng sử dụng Email khác"
+            );
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User newUser = this.userService.handleCreateUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED). body(this.userService.convertToResCreateUserDTO(newUser));
     }
 }
