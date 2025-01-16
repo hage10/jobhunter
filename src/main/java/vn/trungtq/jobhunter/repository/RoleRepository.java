@@ -9,4 +9,5 @@ import vn.trungtq.jobhunter.domain.Role;
 @RestController
 public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
     boolean existsByName(String name);
+    Role findByName(String name);
 }
