@@ -11,4 +11,6 @@ import java.util.List;
 @RestController
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
     boolean existsByName(String name);
+
+    List<Job> findBySkillsIn(List<Skill> skills);
 }
