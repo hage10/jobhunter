@@ -1,47 +1,40 @@
 package vn.trungtq.jobhunter.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.turkraft.springfilter.boot.Filter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import vn.trungtq.jobhunter.domain.response.ResultPaginationDTO;
 import vn.trungtq.jobhunter.util.SecurityUtil;
 
 import java.time.Instant;
 import java.util.List;
 
+@Table(name = "subscribers")
 @Entity
-@Table(name = "skills")
 @Getter
 @Setter
-public class Skill {
+public class Subscriber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @NotBlank(message = "Tên skill không được để trống")
+    @NotBlank(message = "Name không được để trống")
     private String name;
+
+    @NotBlank(message = "email không được để trống")
+    private String email;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "subscribers" })
+    @JoinTable(name = "subscriber_skill", joinColumns = @JoinColumn(name =
+            "subscriber_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<Skill> skills;
 
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
-    @JsonIgnore
-    private List<Job> jobs;
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
-    @JsonIgnore
-    private List<Subscriber> subscribers;
-
     @PrePersist
     protected void onCreate() {
         String createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : null;
@@ -54,5 +47,4 @@ public class Skill {
         this.setUpdatedBy(updateBy);
         this.setUpdatedAt(Instant.now());
     }
-
 }

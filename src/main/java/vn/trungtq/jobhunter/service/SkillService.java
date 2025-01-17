@@ -50,6 +50,7 @@ public class SkillService {
         if (skill.isPresent()) {
             Skill skillToDelete = skill.get();
             skillToDelete.getJobs().forEach(job -> job.getSkills().remove(skillToDelete));
+            skillToDelete.getSubscribers().forEach(subs -> subs.getSkills().remove(skillToDelete));
 
         }
         this.skillRepository.deleteById(id);

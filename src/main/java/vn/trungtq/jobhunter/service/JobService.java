@@ -80,7 +80,7 @@ public class JobService {
                     .stream().map(x -> x.getId())
                     .collect(Collectors.toList());
             List<Skill> dbSkills = this.skillRepository.findByIdIn(reqSkills);
-            job.setSkills(dbSkills);
+            jobInDB.setSkills(dbSkills);
         }
         if(job.getCompany() != null){
             Optional<Company> companyOptional = this.companyRepository.findById(job.getCompany().getId());
