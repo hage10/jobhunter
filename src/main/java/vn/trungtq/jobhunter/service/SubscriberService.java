@@ -1,5 +1,6 @@
 package vn.trungtq.jobhunter.service;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import vn.trungtq.jobhunter.domain.Job;
 import vn.trungtq.jobhunter.domain.Subscriber;
@@ -26,6 +27,11 @@ public class SubscriberService {
         this.jobRepository = jobRepository;
         this.emailService = emailService;
     }
+
+//    @Scheduled(cron = "0 * * * * *")
+//    public void testCron(){
+//        System.out.println("<<<<<<<<<<heleelelle");
+//    }
 
     public Subscriber handleCreateSubscriber(Subscriber job) {
         if(job.getSkills() != null){
@@ -87,5 +93,8 @@ public class SubscriberService {
                 }
             }
         }
+    }
+    public Subscriber findByEmail(String email){
+        return this.subscriberRepository.findByEmail(email);
     }
 }

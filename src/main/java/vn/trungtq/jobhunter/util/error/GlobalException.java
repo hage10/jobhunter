@@ -60,7 +60,7 @@ public class GlobalException {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
         res.setMessage(ex.getMessage());
-        res.setMessage("404 Not Found, URL may not exist...");
+        res.setError("404 Not Found, URL may not exist...");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
     @ExceptionHandler(value = {

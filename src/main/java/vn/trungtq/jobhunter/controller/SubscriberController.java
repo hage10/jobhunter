@@ -6,8 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.trungtq.jobhunter.domain.Subscriber;
 import vn.trungtq.jobhunter.service.SubscriberService;
+import vn.trungtq.jobhunter.util.SecurityUtil;
 import vn.trungtq.jobhunter.util.anotation.ApiMessage;
 import vn.trungtq.jobhunter.util.error.IdInvalidException;
+
+import java.security.Security;
 
 @RestController
 public class SubscriberController {
@@ -34,6 +37,14 @@ public class SubscriberController {
         }
         Subscriber updatedSubscriber = this.subscriberService.handleUpdateSubscriber(subscriber,curSubscriber);
         return ResponseEntity.status(HttpStatus.OK).body(updatedSubscriber);
+    }
+
+    @PostMapping("/subscribers/skills")
+    @ApiMessage("Get subscriber's skill")
+    public ResponseEntity<Subscriber> getSubscriberSkill() throws IdInvalidException {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent()
+                ? SecurityUtil.getCurrentUserLogin().get() : "";
+        return ResponseEntity.ok().body(this.subscriberService.findByEmail(email));
     }
 //    @GetMapping("/subscribers")
 //    public ResponseEntity<ResultPaginationDTO> getAllSubscriber(@Filter Specification<Subscriber> spec, Pageable pageable){

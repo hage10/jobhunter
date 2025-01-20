@@ -59,9 +59,9 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(whiteList).permitAll()
-                        .requestMatchers(HttpMethod.GET,"/companies").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/jobs").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/skills").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/companies/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/jobs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/skills/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
